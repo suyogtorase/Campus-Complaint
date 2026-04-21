@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
-import { Shield, BarChart3, Bell, Users, ArrowRight, CheckCircle, AlertTriangle, FileText } from "lucide-react";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+import { Shield, BarChart3, Bell, Users, ArrowRight, CheckCircle, AlertTriangle, FileText, LayoutDashboard, LogOut, User } from "lucide-react";
 
 const Landing = () => {
+  const { user, logout } = useContext(AuthContext);
   const features = [
     {
       icon: <Shield size={28} />,
@@ -51,18 +54,47 @@ const Landing = () => {
           <Shield size={26} /> SmartCampus
         </h1>
         <div className="flex items-center gap-3">
-          <Link
-            to="/login"
-            className="text-slate-300 hover:text-white transition-colors font-medium px-4 py-2 rounded-lg hover:bg-slate-800"
-          >
-            Sign In
-          </Link>
-          <Link
-            to="/register"
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg font-medium transition-all inline-flex items-center gap-2 hover:shadow-lg hover:shadow-indigo-500/20"
-          >
-            Get Started <ArrowRight size={16} />
-          </Link>
+          {user ? (
+            <div className="flex items-center gap-2 bg-slate-800/80 border border-slate-700 rounded-full pl-1 pr-1 py-1">
+              <Link
+                to="/dashboard"
+                className="flex items-center gap-2 hover:bg-slate-700/50 rounded-full pr-3 pl-1 py-1 transition-colors"
+                title="Go to Dashboard"
+              >
+                <div className="w-8 h-8 rounded-full bg-indigo-600/30 border border-indigo-500/30 flex items-center justify-center text-indigo-400 font-bold text-sm shrink-0">
+                  {user?.name?.charAt(0).toUpperCase()}
+                </div>
+                <span className="text-sm font-medium text-slate-200 hidden sm:block">
+                  {user?.name?.split(' ')[0]}
+                </span>
+                <span className="bg-indigo-600/20 text-indigo-400 text-[10px] font-bold px-2 py-0.5 rounded-full ml-1 uppercase tracking-wider hidden sm:block delay-75">
+                  {user?.role}
+                </span>
+              </Link>
+              <button
+                onClick={() => logout()}
+                title="Logout"
+                className="w-8 h-8 rounded-full hover:bg-rose-500/10 hover:text-rose-400 text-slate-400 flex items-center justify-center transition-colors cursor-pointer mr-1"
+              >
+                <LogOut size={16} />
+              </button>
+            </div>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                className="text-slate-300 hover:text-white transition-colors font-medium px-4 py-2 rounded-lg hover:bg-slate-800"
+              >
+                Sign In
+              </Link>
+              <Link
+                to="/register"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg font-medium transition-all inline-flex items-center gap-2 hover:shadow-lg hover:shadow-indigo-500/20"
+              >
+                Get Started <ArrowRight size={16} />
+              </Link>
+            </>
+          )}
         </div>
       </nav>
 
@@ -81,18 +113,29 @@ const Landing = () => {
           track everything — powered by smart routing, SLA enforcement, and real-time analytics.
         </p>
         <div className="flex items-center justify-center gap-4 flex-wrap">
-          <Link
-            to="/register"
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3.5 rounded-xl font-semibold transition-all hover:shadow-xl hover:shadow-indigo-500/25 inline-flex items-center gap-2 text-lg active:scale-95"
-          >
-            Raise a Complaint <ArrowRight size={18} />
-          </Link>
-          <Link
-            to="/login"
-            className="border border-slate-600 hover:border-slate-400 text-slate-300 hover:text-white px-8 py-3.5 rounded-xl font-semibold transition-all text-lg"
-          >
-            Sign In
-          </Link>
+          {user ? (
+            <Link
+              to="/dashboard"
+              className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3.5 rounded-xl font-semibold transition-all hover:shadow-xl hover:shadow-indigo-500/25 inline-flex items-center gap-2 text-lg active:scale-95"
+            >
+              <LayoutDashboard size={18} /> Go to Dashboard
+            </Link>
+          ) : (
+            <>
+              <Link
+                to="/register"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3.5 rounded-xl font-semibold transition-all hover:shadow-xl hover:shadow-indigo-500/25 inline-flex items-center gap-2 text-lg active:scale-95"
+              >
+                Raise a Complaint <ArrowRight size={18} />
+              </Link>
+              <Link
+                to="/login"
+                className="border border-slate-600 hover:border-slate-400 text-slate-300 hover:text-white px-8 py-3.5 rounded-xl font-semibold transition-all text-lg"
+              >
+                Sign In
+              </Link>
+            </>
+          )}
         </div>
       </section>
 
@@ -134,16 +177,29 @@ const Landing = () => {
       {/* CTA Banner */}
       <section className="max-w-4xl mx-auto px-6 pb-24">
         <div className="bg-indigo-600/10 border border-indigo-500/20 rounded-2xl p-12 text-center">
-          <h3 className="text-3xl font-bold mb-4">Ready to get started?</h3>
+          <h3 className="text-3xl font-bold mb-4">
+            {user ? "Welcome back!" : "Ready to get started?"}
+          </h3>
           <p className="text-slate-400 mb-8 text-lg">
-            Join hundreds of students already using SmartCampus to voice their concerns effectively.
+            {user 
+              ? "View your dashboard to manage complaints and view updates." 
+              : "Join hundreds of students already using SmartCampus to voice their concerns effectively."}
           </p>
-          <Link
-            to="/register"
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-10 py-3.5 rounded-xl font-semibold transition-all inline-flex items-center gap-2 text-lg hover:shadow-xl hover:shadow-indigo-500/25 active:scale-95"
-          >
-            Create Your Account <ArrowRight size={18} />
-          </Link>
+          {user ? (
+            <Link
+              to="/dashboard"
+              className="bg-indigo-600 hover:bg-indigo-700 text-white px-10 py-3.5 rounded-xl font-semibold transition-all inline-flex items-center gap-2 text-lg hover:shadow-xl hover:shadow-indigo-500/25 active:scale-95"
+            >
+              <LayoutDashboard size={18} /> Go to Dashboard
+            </Link>
+          ) : (
+            <Link
+              to="/register"
+              className="bg-indigo-600 hover:bg-indigo-700 text-white px-10 py-3.5 rounded-xl font-semibold transition-all inline-flex items-center gap-2 text-lg hover:shadow-xl hover:shadow-indigo-500/25 active:scale-95"
+            >
+              Create Your Account <ArrowRight size={18} />
+            </Link>
+          )}
         </div>
       </section>
 
