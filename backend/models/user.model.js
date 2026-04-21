@@ -7,7 +7,6 @@ const userSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-
     email: {
       type: String,
       required: true,
@@ -15,33 +14,25 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
     },
-
     password: {
       type: String,
       required: true,
       minlength: 6,
     },
-
     role: {
       type: String,
-      enum: ["admin", "teacher", "student"],
+      enum: ["student", "teacher", "incharge", "admin"],
       default: "student",
     },
-
-    // Only for teachers
-    departments: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Department",
-      },
-    ],
-
-    // Optional extra info
+    department: {
+      type: String,
+      enum: ["COMP", "IT", "AI&DS", "ENTC", "ECE", "NONE"],
+      default: "NONE", // student might be NONE, or we assign them. Let's make it flexible.
+    },
     profilePic: {
       type: String,
       default: "",
     },
-
     isActive: {
       type: Boolean,
       default: true,
