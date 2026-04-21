@@ -1,1 +1,12 @@
 @import "tailwindcss";
+
+@theme {
+  --color-primary: #4f46e5;
+  --color-primary-hover: #4338ca;
+  --color-bg-dark: #0f172a;
+  --color-card-dark: #1e293b;
+}
+
+body {
+  @apply bg-slate-900 text-slate-50 antialiased;
+}

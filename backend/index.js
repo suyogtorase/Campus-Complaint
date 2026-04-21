@@ -1,7 +1,13 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
 import { connectDB } from "./config/db.js";
-import UserRouter from "./routes/user.route.js";
+import { startSlaCronJobs } from "./services/sla.service.js";
+
+import authRoutes from "./routes/auth.routes.js";
+import complaintRoutes from "./routes/complaint.routes.js";
+import adminRoutes from "./routes/admin.routes.js";
+import feedbackRoutes from "./routes/feedback.routes.js";
 
 dotenv.config();
 
@@ -10,14 +16,23 @@ const app = express();
 // Connect Database
 connectDB();
 
-// Middleware
-app.use(express.json());
+// Start Background Services
+startSlaCronJobs();
 
-app.use("/api/user", UserRouter);
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Routes
+app.use("/api/auth", authRoutes);
+app.use("/api/complaints", complaintRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/feedback", feedbackRoutes);
 
 // Test route
 app.get("/", (req, res) => {
-  res.send("API is running");
+  res.send("Smart Campus System API is running");
 });
 
 // Start Server
